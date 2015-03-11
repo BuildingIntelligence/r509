@@ -280,9 +280,15 @@ module R509
           @ordered_names << asn
           @types[asn.type] << asn.value
         else
-          gn = R509::ASN1::GeneralName.new(asn)
-          @ordered_names << gn
-          @types[gn.type] << gn.value
+          #TODO: Implement the unsupported GeneralName used by current PIV cards.
+          # Output to STDERR when there is an unsupported entity, and continue.
+          begin
+            gn = R509::ASN1::GeneralName.new(asn)
+            @ordered_names << gn
+            @types[gn.type] << gn.value
+          rescue Exception => ex
+            STDERR.puts "Error adding new ASN: #{ex}"
+          end
         end
       end
 
